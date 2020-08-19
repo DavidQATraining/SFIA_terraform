@@ -40,14 +40,7 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-# resource "aws_egress_only_internet_gateway" "main" {
-#   vpc_id = aws_vpc.main.id
-
-#   tags = {
-#     Name = "main"
-#   }
-# }
-
+# create route table connection vpc to open internet via internet gateway
 resource "aws_route_table" "r" {
   vpc_id = aws_vpc.main.id
 
@@ -56,21 +49,18 @@ resource "aws_route_table" "r" {
     gateway_id = aws_internet_gateway.gw.id
   }
 
-#   route {
-#     ipv6_cidr_block        = "::/0"
-#     egress_only_gateway_id = aws_egress_only_internet_gateway.main.id
-#   }
-
   tags = {
     Name = "main"
   }
 }
 
+#create route table association linking routetable to subnets
 resource "aws_route_table_association" "a" {
   subnet_id      = aws_subnet.subnet_a.id
   route_table_id = aws_route_table.r.id
 }
 
+#create security group allowing traffic from port 22 (SSH) and port 80(http)
 resource "aws_security_group" "ingress-all-test" {
   name   = "allow-all-sg"
   vpc_id = aws_vpc.main.id
@@ -113,7 +103,7 @@ resource "aws_instance" "web" {
   key_name                    = var.key_name
   subnet_id                   = aws_subnet.subnet_a.id
   associate_public_ip_address = true
-  vpc_security_group_ids = ["${aws_security_group.ingress-all-test.id}"]
+  vpc_security_group_ids      = ["${aws_security_group.ingress-all-test.id}"]
 
 }
 
