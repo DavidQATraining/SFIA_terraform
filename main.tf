@@ -5,8 +5,8 @@ provider "aws" {
 }
 
 resource "aws_vpc" "main" {
-  cidr_block       = var.cidr_block
-  instance_tenancy = "default"
+  cidr_block           = var.cidr_block
+  instance_tenancy     = "default"
   enable_dns_hostnames = true
 
   tags = {
@@ -19,9 +19,9 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_subnet" "subnet_a" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.sub_cidr_block
-  availability_zones = data.aws_availability_zones.available.names[]
+  vpc_id             = aws_vpc.main.id
+  cidr_block         = var.sub_cidr_block
+  availability_zones = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "Main"
