@@ -4,7 +4,7 @@ provider "aws" {
 
 }
 
-# create VPC
+# block to create VPC
 resource "aws_vpc" "main" {
   cidr_block           = var.cidr_block
   instance_tenancy     = "default"
@@ -15,12 +15,12 @@ resource "aws_vpc" "main" {
   }
 }
 
-# fetch me all teh availability zones for the region I'm in
+# block to fetch me all the availability zones for the region I'm in and put it in a data block
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# create the subnet based of created vpc
+#block to create the subnet based of created vpc
 resource "aws_subnet" "subnet_a" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.sub_cidr_block
@@ -31,7 +31,7 @@ resource "aws_subnet" "subnet_a" {
   }
 }
 
-# ADD ROUTE TABLE ASSOCIATION > ROUTE TABLE > INTERNET GATEWAY. BELOW \/ 
+#block to  ADD ROUTE TABLE ASSOCIATION > ROUTE TABLE > INTERNET GATEWAY. BELOW \/ 
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
@@ -40,7 +40,7 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-# create route table connection vpc to open internet via internet gateway
+#block to  create route table connection vpc to open internet via internet gateway
 resource "aws_route_table" "r" {
   vpc_id = aws_vpc.main.id
 
@@ -54,13 +54,13 @@ resource "aws_route_table" "r" {
   }
 }
 
-#create route table association linking routetable to subnets
+#block to create route table association linking routetable to subnets
 resource "aws_route_table_association" "a" {
   subnet_id      = aws_subnet.subnet_a.id
   route_table_id = aws_route_table.r.id
 }
 
-#create security group allowing traffic from port 22 (SSH) and port 80(http)
+#block to create security group allowing traffic from port 22 (SSH) and port 80(http)
 resource "aws_security_group" "ingress-all-test" {
   name   = "allow-all-sg"
   vpc_id = aws_vpc.main.id
@@ -96,7 +96,7 @@ resource "aws_security_group" "ingress-all-test" {
 }
 
 
-# creates ec2 instance
+#block to creates ec2 instance
 resource "aws_instance" "web" {
   ami                         = var.ami
   instance_type               = var.instance
