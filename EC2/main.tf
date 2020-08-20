@@ -1,5 +1,5 @@
 #block to creates ec2 instance
-resource "aws_instance" "web" {
+resource "aws_instance" "manager" {
   ami                         = var.ami
   instance_type               = var.instance
   key_name                    = var.key_name
@@ -8,6 +8,19 @@ resource "aws_instance" "web" {
   vpc_security_group_ids      = [var.vpc_security_group_ids]
 
   tags = {
-    Name = "EC2_t2Micro"
+    Name = "EC2_t2Micro_manager"
+  }
+}
+
+resource "aws_instance" "worker" {
+  ami                         = var.ami
+  instance_type               = var.instance
+  key_name                    = var.key_name
+  associate_public_ip_address = true
+  subnet_id                   = var.subnet_id
+  vpc_security_group_ids      = [var.vpc_security_group_ids]
+
+  tags = {
+    Name = "EC2_t2Micro_worker"
   }
 }

@@ -1,28 +1,19 @@
 #block to create security group allowing traffic from port 22 (SSH) and port 80(http)
-resource "aws_security_group" "ingress-all-test" {
-  name   = "allow-all-sg"
+resource "aws_security_group" "manager" {
+  name   = "manager"
   vpc_id = var.vpc_id
 
-  ingress {
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
+  dynamic "ingress" {
+    iterator = port
+    for_each = var.ingress_ports_manager
+    content {
+      from_port   = port.value
+      protocol    = "tcp"
+      to_port     = port.value
+      cidr_blocks = ["0.0.0.0/0"]
+    }
 
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
   }
-
-  ingress {
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-
-    from_port = 80
-    to_port   = 80
-    protocol  = "tcp"
-  }
-
   // Terraform removes the default rule
   egress {
     from_port   = 0
@@ -31,4 +22,39 @@ resource "aws_security_group" "ingress-all-test" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  tags = {
+    Name = "manager_SG"
+  }
+
+  
+}
+
+resource "aws_security_group" "worker" {
+  name   = "worker"
+  vpc_id = var.vpc_id
+
+  dynamic "ingress" {
+    iterator = port
+    for_each = var.ingress_ports_worker
+    content {
+      from_port   = port.value
+      protocol    = "tcp"
+      to_port     = port.value
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+
+  }
+  // Terraform removes the default rule
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "worker_SG"
+  }
+
+  
 }

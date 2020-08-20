@@ -15,6 +15,12 @@ module "SG" {
 module "EC2" {
   source                 = "./EC2"
   subnet_id              = module.VPC.subnet_a_id
-  vpc_security_group_ids = module.SG.SG_id
+  vpc_security_group_ids = module.SG.SG_id_manager
+}
+
+module "EC2" {
+  source                 = "./EC2"
+  subnet_id              = module.VPC.subnet_a_id
+  vpc_security_group_ids = module.SG.SG_id_worker
 }
 

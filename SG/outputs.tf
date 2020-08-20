@@ -1,4 +1,8 @@
-output "SG_id" {
-  value = aws_security_group.ingress-all-test.id
+output "SG_id_manager" {
+  value = aws_security_group.manager.id
+}
+
+output "SG_id_worker" {
+  value = aws_security_group.worker.id
 }
 
