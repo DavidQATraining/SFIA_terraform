@@ -28,11 +28,17 @@ module "SG_worker" {
   name = "worker"
 }
 
+data "template_file" "init"{
+  template = "${file("${path.module}/scripts/setup.sh")}"
+}
+
+
 module "EC2_manager" {
   source                 = "./EC2"
   subnet_id              = module.VPC.subnet_a_id
   vpc_security_group_ids = [module.SG_master_open.SG_id, module.SG_master_myip.SG_id]
   name                   = "manager"
+  user_data = data.template_file.init.rendered
 }
 
 module "EC2_worker" {
@@ -40,5 +46,6 @@ module "EC2_worker" {
   subnet_id              = module.VPC.subnet_a_id
   vpc_security_group_ids = [module.SG_worker.SG_id]
   name                   = "worker"
+  user_data = data.template_file.init.rendered
 }
 

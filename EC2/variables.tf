@@ -17,4 +17,10 @@ variable "subnet_id" {}
 variable "vpc_security_group_ids" {}
 variable "name" {}
 
+variable "user_data" {
+  default     = "data.template_file.init.rendered"
+  description = "script to run when creating instance"
+}
+
+
 
