@@ -1,7 +1,7 @@
 #block to create security group allowing traffic from port 22 (SSH) and port 80(http)
 resource "aws_security_group" "ingress-all-test" {
   name   = "allow-all-sg"
-  vpc_id = aws_vpc.main.id
+  vpc_id = var.vpc_id
 
   ingress {
     cidr_blocks = [
