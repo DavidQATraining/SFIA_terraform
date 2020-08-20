@@ -17,3 +17,4 @@ module "EC2" {
   subnet_id              = module.VPC.subnet_a_id
   vpc_security_group_ids = module.SG.SG_id
 }
+
